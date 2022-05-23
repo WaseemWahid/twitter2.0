@@ -16,10 +16,8 @@ const Home: NextPage = () => {
       <main className="grid grid-cols-9">
         <Sidebar />
 
-        {/* {Feed} */}
         <Feed />
 
-        {/* {Widgets} */}
         <Widgets />
       </main>
     </div>

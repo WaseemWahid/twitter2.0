@@ -39,3 +39,6 @@ yarn-error.log*
 
 #sanity-backend
 /sanity/node_modules
+
+#.env
+.env
