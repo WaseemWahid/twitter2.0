@@ -4,8 +4,15 @@ import Image from 'next/image'
 import Feed from '../components/Feed'
 import Sidebar from '../components/Sidebar'
 import Widgets from '../components/Widgets'
+import { Tweet } from '../typings'
+import { fetchTweets } from '../utils/fetchTweets'
 
-const Home: NextPage = () => {
+interface Props {
+  tweets: Tweet[]
+}
+
+const Home = ({ tweets }: Props) => {
+  console.log(tweets)
   return (
     <div className="mx-auto max-h-screen overflow-hidden lg:max-w-6xl">
       <Head>
@@ -16,7 +23,7 @@ const Home: NextPage = () => {
       <main className="grid grid-cols-9">
         <Sidebar />
 
-        <Feed />
+        <Feed tweets={tweets}/>
 
         <Widgets />
       </main>
@@ -31,7 +38,7 @@ const tweets = await fetchTweets();
 
   return {
     props: {
-
+      tweets,
     }
   }
 }

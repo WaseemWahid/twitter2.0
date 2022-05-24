@@ -15,11 +15,13 @@ type Data = {
     tweets: Tweet[]
 }
 
-export default function handler(
+export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse<Data>
 ) {
 
+    const tweets: Tweet[] = await sanityClient.fetch(feedQuery)
 
-    res.status(200).json({ name: 'John Doe' })
+    console.log(tweets)
+    res.status(200).json({ tweets })
 }
