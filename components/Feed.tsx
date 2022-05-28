@@ -33,9 +33,8 @@ function Feed({ tweets: tweetsProp }: Props) {
                 transition=all duration-500 ease-out hover:rotate-180 active:scale-125"/>
             </div>
 
-            {/* Tweetbox */}
             <div>
-                <TweetBox />
+                <TweetBox setTweets={setTweets}/>
             </div>
             <div>
                 {tweets.map(tweet => (

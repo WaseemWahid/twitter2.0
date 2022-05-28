@@ -1,8 +1,15 @@
 import { CalendarIcon, EmojiHappyIcon, LocationMarkerIcon, PhotographIcon, SearchCircleIcon } from '@heroicons/react/outline'
 import { useSession } from 'next-auth/react'
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, MouseEvent, SetStateAction, Dispatch } from 'react'
+import toast from 'react-hot-toast'
+import { Tweet, TweetBody } from '../typings'
+import { fetchTweets } from '../utils/fetchTweets'
 
-const TweetBox = () => {
+interface Props {
+    setTweets: Dispatch<SetStateAction<Tweet[]>>
+}
+
+function TweetBox({ setTweets }: Props) {
     const [input, setInput] = useState<string>("")
     const [image, setImage] = useState<string>("")
 
@@ -19,6 +26,42 @@ const TweetBox = () => {
         setImage(imageInputRef.current.value)
         imageInputRef.current.value = '';
         setImageUrlBoxIsOpen(false);
+    }
+
+    const postTweet = async () => {
+        const tweetInfo: TweetBody = {
+            text: input,
+            username: session?.user?.name || 'Unknown User',
+            profileImg: session?.user?.image || 'https://links.papareact.com/gll',
+            image: image,
+            
+        }
+        const result = await fetch(`/api/addTweet`, {
+            body: JSON.stringify(tweetInfo),
+            method: 'POST',
+        })
+
+        const json = await result.json();
+
+        const newTweets = await fetchTweets();
+        setTweets(newTweets)
+
+        toast('Tweet Posted', {
+            icon: '🚀'
+        })
+        return json
+    }
+
+    const handleSubmit = (
+        e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>
+        ) => {
+            e.preventDefault();
+
+            postTweet();
+
+            setInput('')
+            setImage('')
+            setImageUrlBoxIsOpen(false)
     }
 
     return (
@@ -43,7 +86,13 @@ const TweetBox = () => {
                             <CalendarIcon className="h-5 w-5 cursor-pointer transition-transform duration-150 ease-out hover:scale-150"/>
                             <LocationMarkerIcon className="h-5 w-5 cursor-pointer transition-transform duration-150 ease-out hover:scale-150"/>
                         </div>
-                        <button disabled={!input || !session} className='rounded-full bg-twitter px-5 py-2 font-bold text-white disabled:opacity-40'>Tweet</button>
+                        <button 
+                            onClick={handleSubmit}
+                            disabled={!input || !session} 
+                            className='rounded-full bg-twitter px-5 py-2 font-bold text-white disabled:opacity-40'
+                        >
+                            Tweet
+                        </button>
                     </div>
                     {imageUrlBoxIsOpen && (
                         <form className='mt-5 flex rounded-lg bg-twitter/80 py-2 px-4'>
